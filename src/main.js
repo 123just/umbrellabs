@@ -3,8 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import HsMenu from 'hs-menu'
 
 Vue.config.productionTip = false
+
+Vue.use(HsMenu);
 
 /* eslint-disable no-new */
 new Vue({
