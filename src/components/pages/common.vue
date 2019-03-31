@@ -15,13 +15,15 @@
           <div class="user-motto"></div>
           <div class="user-name">{{ userName }}</div>
         </div>
-        <div class="top-infos">
+        <div class="top-infos" @click="goToInfos">
           <el-badge :value="infosValue" class="item">
-            <el-button size="small">评论</el-button>
+            <i class="infoIcon el-icon-bell"></i>
           </el-badge>
         </div>
       </div>
-      <router-view/>
+      <div class="right-main">
+        <router-view/>
+      </div>
     </div>
   </div>
 </template> 
@@ -84,6 +86,9 @@ export default {
       return new Promise(resolve => {
         resolve();
       });
+    },
+    goToInfos () {
+      // goto 消息
     }
   }
 }
@@ -106,6 +111,7 @@ export default {
   .right-content {
     flex-grow: 1;
     width: calc(100% - 180px);
+    height: 100%;
     background-color: #EEEEEC;
   }
   .right-top {
@@ -142,7 +148,34 @@ export default {
     background-size: 40px 40px;
   }
   .top-infos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 60px;
     background: #ffffff;
+  }
+  .infoIcon {
+    font-size: 23px;
+  }
+  .right-main {
+    width: calc(100% - 56px);
+    height: calc(100% - 116px);
+    margin: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+  }
+  /* 以下为通用样式 */
+  .el-button {
+    border-radius: 0;
+    width: 85px;
+  }
+  .el-button--primary {
+    color: #fff;
+    background-color: #FF8040;
+    border-color: #FF8040;
+  }
+  .reset-btn {
+    border-color: #FF8040;
+    color: #FF8040;
   }
 </style>

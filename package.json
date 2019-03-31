@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "async-validator": "^1.11.0",
     "axios": "^0.18.0",
     "element-ui": "^2.6.3",
     "hs-menu": "^1.2.1",
