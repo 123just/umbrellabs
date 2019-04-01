@@ -16,10 +16,10 @@ export default new Router({
       path: '/app-center',
       name: 'app',
       component: Main,
-      redirect: './app-center/umbrella-manage',
+      redirect: '/app-center/umbrella',
       children: [
         {
-          path: 'umbrella-manage',
+          path: 'umbrella',
           component: () => import('../components/pages/umbrella'),
           name: 'umbrellaManage',
           meta: {
@@ -28,7 +28,7 @@ export default new Router({
           },
         },
         {
-          path: 'user-manage',
+          path: 'user',
           component: () => import('../components/pages/user'),
           name: '用户管理',
           meta: {
@@ -37,7 +37,7 @@ export default new Router({
           },
         },
         {
-          path: 'base-manage',
+          path: 'base',
           component: () => import('../components/pages/baseInfo'),
           name: '基础信息管理',
           meta: {
@@ -46,7 +46,7 @@ export default new Router({
           },
         },
         {
-          path: 'borrow-manage',
+          path: 'borrow',
           component: () => import('../components/pages/borrowInfo'),
           name: '借还记录管理',
           meta: {
@@ -55,7 +55,7 @@ export default new Router({
           },
         },
         {
-          path: 'sign-manage',
+          path: 'sign',
           component: () => import('../components/pages/signInfo'),
           name: '志愿者值班信息',
           meta: {
@@ -64,7 +64,7 @@ export default new Router({
           },
         },
         {
-          path: 'overtime-manage',
+          path: 'overtime',
           component: () => import('../components/pages/overTime'),
           name: '未还伞信息',
           meta: {

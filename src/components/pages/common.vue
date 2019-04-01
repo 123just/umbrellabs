@@ -38,32 +38,37 @@ export default {
         "normalIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/3064945158b54ce5a99058637fc92dc7.png",
         "menuCode": "umbrella",
         "menuName": "志愿伞管理",
-        "menuId": 0
+        "menuId": 0,
+        "targetPath": '/app-center/umbrella'
       },{
         "menuCode": "user",
         "menuId": 1,
         "menuName": "用户管理",
+        "targetPath": '/app-center/user',
         "activeIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/abb75be0d5b24c98a3d4e4ef303693df.png",
         "hoverIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/abb75be0d5b24c98a3d4e4ef303693df.png",
-        "normalIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/1dbe078cce984a28a1755c2020c66428.png"
+        "normalIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/1dbe078cce984a28a1755c2020c66428.png",
       },{
-        "menuCode": "baseInfo",
+        "menuCode": "base",
         "menuId": 2,
-        "menuName": "基础信息管理",
+        "menuName": "项目经费管理",
+        "targetPath": '/app-center/base',
         "activeIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/52e5187ce8514f28baa4ff5060c6b097.png",
         "normalIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/993ffbb90d694e27b88820c773c55e16.png",
         "hoverIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/52e5187ce8514f28baa4ff5060c6b097.png"
       },{
-        "menuCode": "borrowInfo",
+        "menuCode": "borrow",
         "menuId": 3,
         "menuName": "借还记录管理",
+        "targetPath": '/app-center/borrow',
         "activeIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/7013b97cb8d24b7b9cbc6c5aa4c8a803.png",
         "hoverIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/7013b97cb8d24b7b9cbc6c5aa4c8a803.png",
         "normalIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/658426b614da484bafef302d9f9a71fc.png"
       },{
-        "menuCode": "signInfo",
+        "menuCode": "sign",
         "menuId": 4,
         "menuName": "志愿者值班信息",
+        "targetPath": '/app-center/sign',
         "activeIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/ac11be938c83482cbd9da91d7d902655.png",
         "hoverIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/ac11be938c83482cbd9da91d7d902655.png",
         "normalIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/7460b75db3f84d429298eaff644bcda8.png",
@@ -77,10 +82,15 @@ export default {
   },
   created() {
     // infosValue值的获取
+    let index = this.$route.path.lastIndexOf("\/");  
+    let str  = this.$route.path.substring(index + 1, this.$route.path.length);
+    this.activeMenu = str;
+    this.title = this.$route.meta.name;
   },
   methods: {
     select (data) {
-      this.title = data.menu.menuName
+      this.title = data.menu.menuName;
+      this.$router.push({ path: data.menu.targetPath });
     },
     beforeSelect (currentMenu) {
       return new Promise(resolve => {
@@ -88,7 +98,8 @@ export default {
       });
     },
     goToInfos () {
-      // goto 消息
+      this.$router.push({ path: '/app-center/overtime' });
+      this.title = '未还伞信息';
     }
   }
 }
@@ -151,6 +162,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     width: 60px;
     background: #ffffff;
   }
@@ -167,14 +179,35 @@ export default {
   /* 以下为通用样式 */
   .el-button {
     border-radius: 0;
-    width: 85px;
   }
   .el-button--primary {
     color: #fff;
     background-color: #FF8040;
     border-color: #FF8040;
+    min-width: 85px;
+  }
+  .el-button--primary:hover{
+    color: #fff;
+    background-color: #F6A67F;
+    border-color: #F6A67F;
+  }
+  .el-button--primary:focus{
+    color: #fff;
+    background-color: #FF8040;
+    border-color: #FF8040;
   }
   .reset-btn {
+    background-color: #ffffff;
+    border-color: #FF8040;
+    color: #FF8040;
+  }
+  .reset-btn:hover {
+    background-color: #FFFFCC;
+    border-color: rgb(255, 93, 64);
+    color: rgb(255, 93, 64);
+  }
+  .reset-btn:focus {
+    background-color: #ffffff;
     border-color: #FF8040;
     color: #FF8040;
   }

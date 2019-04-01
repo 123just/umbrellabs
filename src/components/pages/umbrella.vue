@@ -31,8 +31,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button class="reset-btn">复 原</el-button>
-            <el-button type="primary" class="search-btn">搜 索</el-button>
+            <el-button class="reset-btn" @click="reset">复 原</el-button>
+            <el-button type="primary" class="search-btn" @click="searchItems">搜 索</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -55,21 +55,29 @@
         <template slot-scope="scope">
           <span>{{ getStatusString(scope.row.umbrellaStats) }}</span>
         </template>
-      </el-table-column>
-      <el-table-column
-        prop="lastRepairTime"
-        label="上次维修记录">
-        <template slot-scope="scope">
-          <span>{{scope.row.lastRepairTime ? scope.row.lastRepairTime + ' 维修' : '无维修记录' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleEditStatus(scope.row)">修改状态</el-button>
-          <el-button size="mini" type="warning" @click="handleDelete(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
+        </el-table-column>
+        <el-table-column
+          prop="lastRepairTime"
+          label="上次维修记录">
+          <template slot-scope="scope">
+            <span>{{scope.row.lastRepairTime ? scope.row.lastRepairTime + ' 维修' : '无维修记录' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEditStatus(scope.row)">修改状态</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
+      <div class="pagination">
+        <el-pagination
+          :current-page.sync="currentPage"
+          :page-size="6"
+          layout="total, prev, pager, next"
+          :total="tableData.length">
+        </el-pagination>
+      </div>
     </div>
     <el-dialog title="修改状态" :visible.sync="dialogFormVisible" width="350px">
       <el-form>
@@ -124,8 +132,8 @@ export default {
         position: '',
         status: '',
         code: '',
-        pageNum: '',
-        pageSize: ''
+        pageNum: 1,
+        pageSize: 6
       },
       // tableData
       tableData: [
@@ -179,7 +187,8 @@ export default {
         "updateTime": "2019-02-23 03:34:09"
       }],
       dialogFormVisible: false,
-      dialogStatus: 0
+      dialogStatus: 0,
+      currentPage: 1 // pagination的当前页
     }
   },
   methods: {
@@ -214,6 +223,16 @@ export default {
         console.log('editData');
         // 修改数据
       }).catch(() => {});
+    },
+    // 重置按钮
+    reset() {
+      this.formInfo.position = '';
+      this.formInfo.status = '';
+      this.formInfo.code = '';
+      this.formInfo.pageNum = 1;
+    },
+    searchItems() {
+      // 搜索信息
     }
   }
 }
@@ -221,14 +240,16 @@ export default {
 <style>
   .main-search {
    display: flex;
-   align-items: center; 
+   align-items: flex-start; 
   }
   .search-title {
     display: flex;
     width: 80px;
+    margin-top: 10px;
     justify-content: start;
     align-items: center;
     font-weight: bold;
+    font-size: 15px;
   }
   .search-submain {
     flex: 1;
@@ -242,15 +263,15 @@ export default {
     margin-right: 8px;
     background-color: #FF8040;
   }
-  .form-inline {
-    height: 40px;
-  }
   .items-input {
     width: 140px;
   }
   .main-btns {
     display: flex;
     justify-content: flex-end;
-    margin: 20px 0;
+    margin-bottom: 20px;
+  }
+  .pagination {
+    margin: 20px;
   }
 </style>

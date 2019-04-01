@@ -5,7 +5,7 @@ import App from './App'
 import router from './router'
 import HsMenu from 'hs-menu'
 import { Button, Badge, Input, Select, Option, Form, FormItem, Table, TableColumn, Dialog,
-  MessageBox, Message} from 'element-ui'
+  MessageBox, Message, Pagination, Row, Col} from 'element-ui'
 
 Vue.config.productionTip = false
 
@@ -21,6 +21,9 @@ Vue.use(FormItem)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Dialog)
+Vue.use(Pagination)
+Vue.use(Row)
+Vue.use(Col)
 
 Vue.prototype.$alert = Message.alert;
 Vue.prototype.$msgbox = MessageBox;
