@@ -92,7 +92,7 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="200px">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEditStatus(scope.row)">修改状态</el-button>
+            <el-button size="mini" @click="handleEditStatus(scope.row)">修改</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)" style="width:70px">删除</el-button>
           </template>
         </el-table-column>
@@ -234,7 +234,7 @@ export default {
       return roleString;
     },
     handleEditStatus(row) {
-      this.dialogFormVisible = true;
+      this.$router.push({ path: '/app-center/user-edit' });
     },
     handleDelete(row) {
       // delete data接口

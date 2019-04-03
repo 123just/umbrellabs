@@ -136,60 +136,14 @@ export default {
         pageSize: 6
       },
       // tableData
-      tableData: [
-        {
-        "code": "T001",
-        "count": 0,
-        "createTime": "2019-02-17 09:42:09",
-        "id": 1,
-        "lastRepairTime": "2019-02-23 03:34:09",
-        "umbrellaStats": 1,
-        "updateTime": "2019-02-23 03:34:09"
-      },{
-        "code": "T001",
-        "count": 0,
-        "createTime": "2019-02-17 09:42:09",
-        "id": 1,
-        "lastRepairTime": "2019-02-23 03:34:09",
-        "umbrellaStats": 1,
-        "updateTime": "2019-02-23 03:34:09"
-      },{
-        "code": "T001",
-        "count": 0,
-        "createTime": "2019-02-17 09:42:09",
-        "id": 1,
-        "lastRepairTime": "2019-02-23 03:34:09",
-        "umbrellaStats": 1,
-        "updateTime": "2019-02-23 03:34:09"
-      },{
-        "code": "T001",
-        "count": 0,
-        "createTime": "2019-02-17 09:42:09",
-        "id": 1,
-        "lastRepairTime": "2019-02-23 03:34:09",
-        "umbrellaStats": 1,
-        "updateTime": "2019-02-23 03:34:09"
-      },{
-        "code": "T001",
-        "count": 0,
-        "createTime": "2019-02-17 09:42:09",
-        "id": 1,
-        "lastRepairTime": "2019-02-23 03:34:09",
-        "umbrellaStats": 1,
-        "updateTime": "2019-02-23 03:34:09"
-      },{
-        "code": "T001",
-        "count": 0,
-        "createTime": "2019-02-17 09:42:09",
-        "id": 1,
-        "lastRepairTime": "2019-02-23 03:34:09",
-        "umbrellaStats": 1,
-        "updateTime": "2019-02-23 03:34:09"
-      }],
+      tableData: [],
       dialogFormVisible: false,
       dialogStatus: 0,
       currentPage: 1 // pagination的当前页
     }
+  },
+  created() {
+
   },
   methods: {
     // 更改状态为String类型

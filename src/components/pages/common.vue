@@ -99,7 +99,10 @@ export default {
     },
     goToInfos () {
       this.$router.push({ path: '/app-center/overtime' });
-      this.title = '未还伞信息';
+      this.title = this.$route.meta.name;
+    },
+    changePage () {
+      this.title = this.$route.meta.name;
     }
   }
 }

@@ -71,6 +71,15 @@ export default new Router({
             name: '未还伞信息',
             requiresAuth: true,
           },
+        },
+        {
+          path: 'user-edit',
+          component: () => import('../components/pages/userEdit'),
+          name: '修改信息',
+          meta: {
+            name: '用户管理 / 修改信息',
+            requiresAuth: true,
+          }
         }
       ]
     }
