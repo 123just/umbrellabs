@@ -6,9 +6,7 @@ import router from './router'
 import HsMenu from 'hs-menu'
 import { Button, Badge, Input, Select, Option, Form, FormItem, Table, TableColumn, Dialog,
   MessageBox, Message, Pagination, Row, Col, Alert} from 'element-ui'
-import api from './api/apis.js'
 
-Vue.prototype.$api = api
 
 Vue.config.productionTip = false
 

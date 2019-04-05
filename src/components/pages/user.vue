@@ -30,7 +30,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="角色：">
-            <el-select class="items-input" v-model="formInfo.role" multiple placeholder="请选择">
+            <el-select class="items-input" v-model="formInfo.role" placeholder="请选择">
               <el-option
               v-for="item in roles"
               :key="item.value"
@@ -43,15 +43,15 @@
             <el-input class="items-input" v-model="formInfo.volunteerCode" placeholder="请输入志愿者编号"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button class="reset-btn">复 原</el-button>
-            <el-button type="primary" class="search-btn">搜 索</el-button>
+            <el-button class="reset-btn" native-type="reset" @click="reset">复 原</el-button>
+            <el-button type="primary" class="search-btn" native-type="submit" @click="searchData">搜 索</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div class="main-btns">
-      <el-button type="primary">新增志愿者</el-button>
-      <el-button type="danger">清空志愿者</el-button>
+      <el-button type="primary" @click="addVolunteer">新增志愿者</el-button>
+      <el-button type="danger" @click="deleteVolunteer">清空志愿者</el-button>
     </div>
     <div class="main-table">
       <el-table
@@ -99,10 +99,11 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-          :current-page.sync="currentPage"
+          :current-page.sync="submitInfo.pageNum"
           :page-size="5"
           layout="total, prev, pager, next"
-          :total="tableData.length">
+          :total="totalData"
+          @current-change="changeTableData">
         </el-pagination>
       </div>
     </div>
@@ -110,6 +111,8 @@
 </template>
 
 <script>
+import {getUserList, clearVolunteer, deleteUser} from '../../api/apis'
+
 export default {
   data () {
     return {
@@ -141,75 +144,25 @@ export default {
         className: '',
         code: '',
         name: '',
-        pageNum: 1,
-        pageSize: 5,
         phone: '',
-        role: [],
+        role: '',
         type: '',
         volunteerCode: ''
       },
+      // 接口内的filter数据
+      submitInfo: {
+        pageNum: 1,
+        pageSize: 5,
+      },
       // tableData
-      tableData: [
-        {
-        "className": "软工152",
-        "code": 2015210405049,
-        "creditRating": 0,
-        "id": 0,
-        "name": "justdj",
-        "phone": 135882228,
-        "roleList": [
-          2
-        ],
-        "volunteerId": "001"
-      },{
-        "className": "软工152",
-        "code": 2015210405049,
-        "creditRating": 0,
-        "id": 0,
-        "name": "justdj",
-        "phone": 135882228,
-        "roleList": [
-          1,2,3
-        ],
-        "volunteerId": "002"
-      },{
-        "className": "软工152",
-        "code": 2015210405049,
-        "creditRating": 0,
-        "id": 0,
-        "name": "justdj",
-        "phone": 135882228,
-        "roleList": [
-          1
-        ],
-        "volunteerId": "002"
-      },{
-        "className": "软工152",
-        "code": 2015210405049,
-        "creditRating": 0,
-        "id": 0,
-        "name": "justdj",
-        "phone": 135882228,
-        "roleList": [
-          4
-        ],
-        "volunteerId": "002"
-      },{
-        "className": "软工152",
-        "code": 2015210405049,
-        "creditRating": 0,
-        "id": 0,
-        "name": "justdj",
-        "phone": 135882228,
-        "roleList": [
-          0
-        ],
-        "volunteerId": "002"
-      }],
+      tableData: [],
+      totalData: 0,
       dialogFormVisible: false,
       dialogStatus: 0,
-      currentPage: 1 // pagination的当前页
     }
+  },
+  created() {
+    this.changeTableData();
   },
   methods: {
     // 更改状态为String类型
@@ -233,16 +186,67 @@ export default {
       });
       return roleString;
     },
+    // 改变table数据
+    changeTableData() {
+      getUserList(this.submitInfo).then(res => {
+        this.tableData = res.data.data.list;
+        this.totalData = res.data.data.total;
+      }).catch(res => {console.log(res)})
+    },
     handleEditStatus(row) {
-      this.$router.push({ path: '/app-center/user-edit' });
+      this.$router.push({ path: '/app-center/user-edit', query: {userInfo: row} });
     },
     handleDelete(row) {
       // delete data接口
+      this.$confirm('确认删除该用户？').then(() => {
+        deleteUser(row.id).then(res => {
+          this.$message('删除用户成功');
+        }).catch(res => {
+          console.log(res);
+        })
+      }).catch(() => {});
+    },
+    reset() {
+      this.formInfo.className = '';
+      this.formInfo.code = '';
+      this.formInfo.name = '';
+      this.formInfo.phone = '';
+      this.formInfo.role = '';
+      this.formInfo.type = '';
+      this.formInfo.volunteerCode = '';
+      Object.assign(this.submitInfo, this.formInfo);
+      this.submitInfo.role = -1;
+      this.submitInfo.type = -1;
+      this.changeTableData();
+    },
+    searchData () {
+      Object.assign(this.submitInfo, this.formInfo);
+      if (!this.submitInfo.type) {
+        this.submitInfo.type = -1;
+      } 
+      if (!this.submitInfo.role) {
+        this.submitInfo.role = -1;
+      }
+      this.changeTableData();
+    },
+    addVolunteer() {
+      // add
+    },
+    deleteVolunteer() {
+      this.$confirm('确认删除所有志愿者？').then(() => {
+        clearVolunteer().then(res => {
+          this.$message('删除志愿者成功');
+        }).catch(res => {
+          console.log(res);
+        })
+      }).catch(() => {});
+      // 重新刷新table
+      this.changeTableData();
     }
   }
 }
 </script>
-<style>
+<style scoped>
   .main-search {
    display: flex;
    align-items: flex-start; 
@@ -254,6 +258,7 @@ export default {
     align-items: center;
     font-weight: bold;
     font-size: 15px;
+    margin-top: 10px;
   }
   .search-submain {
     flex: 1;
@@ -268,7 +273,7 @@ export default {
     background-color: #FF8040;
   }
   .items-input {
-    width: 140px;
+    width: 160px;
   }
   .main-btns {
     display: flex;
@@ -280,5 +285,6 @@ export default {
   }
   .el-form-item {
     margin-bottom: 15px;
+    margin-right: 30px;
   }
 </style>

@@ -225,7 +225,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
   .main-search {
    display: flex;
    align-items: flex-start; 

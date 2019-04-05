@@ -32,13 +32,13 @@
           </el-form-item>
           <el-form-item>
             <el-button class="reset-btn" @click="reset">复 原</el-button>
-            <el-button type="primary" class="search-btn" @click="searchItems">搜 索</el-button>
+            <el-button type="primary" native-type="submit" class="search-btn" @click="searchItems">搜 索</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div class="main-btns">
-      <el-button type="primary">新 增</el-button>
+      <el-button type="primary" @click="addVisible = true">新 增</el-button>
     </div>
     <div class="main-table">
       <el-table
@@ -66,23 +66,23 @@
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEditStatus(scope.row)">修改状态</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
-          :current-page.sync="currentPage"
+          :current-page.sync="submitInfo.pageNum"
           :page-size="6"
           layout="total, prev, pager, next"
-          :total="tableData.length">
+          :total="totalData"
+          @current-change="changeTableData">
         </el-pagination>
       </div>
     </div>
-    <el-dialog title="修改状态" :visible.sync="dialogFormVisible" width="350px">
+    <el-dialog title="修改状态" :visible.sync="editVisible" width="350px">
       <el-form>
-          <el-form-item label="状态：" label-width="70px">
-            <el-select class="items-input" v-model="dialogStatus" placeholder="请选择">
+          <el-form-item label="状态：" label-width="70px" style="margin-bottom: 5px">
+            <el-select v-model="editInfo.status" placeholder="请选择">
             <el-option
               v-for="item in statuses"
               :key="item.value"
@@ -92,15 +92,30 @@
           </el-select>
           </el-form-item>
       </el-form>
+      <div class="dialog-txt">{{ editDialogText }}</div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="editVisible = false">取 消</el-button>
         <el-button type="primary" @click="editData">修 改</el-button>
+      </div>
+  </el-dialog>
+  <el-dialog title="新增伞" :visible.sync="addVisible" width="350px">
+      <el-form>
+          <el-form-item label="伞编号：" label-width="80px" style="margin-bottom: 5px">
+            <el-input v-model="addInfo.code" placeholder="请输入伞编号"></el-input>
+          </el-form-item>
+      </el-form>
+      <div class="dialog-txt">* {{ addDialogText }}</div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUmbrellas" :disabled="!addInfo.code">新 增</el-button>
       </div>
   </el-dialog>
   </div>
 </template>
 
 <script>
+import {getUmbrellaList, addUmbrella, editUmbrella} from '../../api/apis'
+
 export default {
   data () {
     return {
@@ -115,6 +130,9 @@ export default {
         label: 'J（教室）'
       }],
       statuses: [{
+        value: -1,
+        label: '请选择'
+      },{
         value: 0,
         label: '停用'
       },{
@@ -130,22 +148,47 @@ export default {
       // 搜索form
       formInfo: {
         position: '',
-        status: '',
+        status: -1,
+        code: ''
+      },
+      addInfo: {
+        code: '',
+        umbrellaStats: 1
+      },
+      editInfo: {
+        status: 1,
+        umbrellaId: ''
+      },
+      submitInfo: {  // 提交时的数据
+        position: '',
+        status: -1,
         code: '',
         pageNum: 1,
         pageSize: 6
       },
       // tableData
       tableData: [],
-      dialogFormVisible: false,
-      dialogStatus: 0,
-      currentPage: 1 // pagination的当前页
+      editVisible: false,
+      addVisible: false,
+      currentPage: 1, // pagination的当前页
+      totalData: 0, // pagination总条数
+      addDialogText: '编号格式： T/S/J + 三位数字',
+      editDialogText: '',
     }
   },
   created() {
-
+    this.changeTableData();
   },
   methods: {
+    // 修改pagination的当前页面 && 修改tableData的接口
+    changeTableData () {
+      getUmbrellaList(this.submitInfo).then(res => {
+        this.tableData = res.data.data.list;
+        this.totalData = res.data.data.total;
+      }).catch(res => {
+        console.log(res);
+      })
+    },
     // 更改状态为String类型
     getStatusString(status) {
       switch (status) {
@@ -166,32 +209,74 @@ export default {
       }
     },
     handleEditStatus(row) {
-      this.dialogFormVisible = true;
+      this.editVisible = true;
+      this.editInfo.umbrellaId = row.id;
+      this.editInfo.status = row.umbrellaStats;
     },
-    handleDelete(row) {
-      // delete data接口
+    addUmbrellas () {
+      if (new RegExp('^[JST][0-9]{3}$').test(this.addInfo.code)) {
+        this.addDialogText = '编号格式： T/S/J + 三位数字';
+        this.$confirm('确认新增' + this.addInfo.code + '伞？').then(() => {
+          // 新增数据
+          addUmbrella(this.addInfo).then(res => {
+            if (res.data.code !== 200) {
+              this.addDialogText = res.data.msg;
+            } else {
+              this.$message('成功添加'+ this.addInfo.code +'伞');
+              this.addVisible = false;
+              // 更新table数据
+              this.changeTableData();
+            }
+          }).catch(res => {
+            this.addDialogText = res.data.msg;
+            this.editVisible = false;
+          })
+        }).catch(() => {
+        });
+      } else {
+        this.addDialogText = '格式错误，正确格式为 T/S/J + 三位数字';
+      }
     },
     editData() {
-      this.$confirm('确认修改状态为 ' + this.getStatusString(this.dialogStatus) + ' ？').then(() => {
-        this.dialogFormVisible = false;
-        console.log('editData');
-        // 修改数据
-      }).catch(() => {});
+      if (this.editInfo.status === -1) {
+        this.editDialogText = '* 请选择状态';
+      } else {
+        this.editDialogText = '';
+        this.$confirm('确认修改状态为 ' + this.getStatusString(this.editInfo.status) + ' ？').then(() => {
+          // 修改数据
+          editUmbrella(this.editInfo).then(res => {
+            if (res.data.code !== 200) {
+              this.editDialogText = '* ' + res.data.msg;
+            } else {
+              this.$message('成功修改'+ this.editInfo.umbrellaId +'伞');
+              this.editVisible = false;
+              // 更新table数据
+              this.changeTableData();
+            }
+          }).catch(res => {
+            this.editDialogText = '* ' + res.data.msg;
+            console.log(res);
+          })
+        }).catch(() => {});
+      }
     },
     // 重置按钮
     reset() {
       this.formInfo.position = '';
-      this.formInfo.status = '';
+      this.formInfo.status = -1;
       this.formInfo.code = '';
       this.formInfo.pageNum = 1;
+      Object.assign(this.submitInfo, this.formInfo);
+      this.changeTableData();
     },
     searchItems() {
-      // 搜索信息
+      Object.assign(this.submitInfo, this.formInfo);
+      this.changeTableData();
     }
   }
 }
 </script>
-<style>
+<style scoped>
   .main-search {
    display: flex;
    align-items: flex-start; 
@@ -227,5 +312,10 @@ export default {
   }
   .pagination {
     margin: 20px;
+  }
+  .dialog-txt {
+    font-size: 12px;
+    margin-left: 80px;
+    text-align: start;
   }
 </style>
