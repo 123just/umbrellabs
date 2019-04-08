@@ -50,7 +50,14 @@
       </div>
     </div>
     <div class="main-btns">
-      <el-button type="primary" @click="addVolunteer">新增志愿者</el-button>
+      <el-button type="primary" @click="downloadFile">获取导入模板</el-button>
+      <el-upload
+        class="upload-demo"
+        :show-file-list=false
+        :on-success="addVolunteer"
+        action="http://139.199.88.87:9001/api/user/manager/volunteer">
+        <el-button type="primary">新增志愿者</el-button>
+      </el-upload>
       <el-button type="danger" @click="deleteVolunteer">清空志愿者</el-button>
     </div>
     <div class="main-table">
@@ -80,7 +87,7 @@
         <el-table-column
         prop="roleList"
         label="角色"
-        align="center" :show-overflow-tooltip=true>
+        align="center" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span>{{ getRoleString(scope.row.roleList) }}</span>
           </template>
@@ -200,7 +207,11 @@ export default {
       // delete data接口
       this.$confirm('确认删除该用户？').then(() => {
         deleteUser(row.id).then(res => {
-          this.$message('删除用户成功');
+          this.$message({
+            message: '删除用户成功',
+            type: 'success'
+          });
+          this.changeTableData();
         }).catch(res => {
           console.log(res);
         })
@@ -217,31 +228,39 @@ export default {
       Object.assign(this.submitInfo, this.formInfo);
       this.submitInfo.role = -1;
       this.submitInfo.type = -1;
+      this.submitInfo.pageNum = 1;
       this.changeTableData();
     },
     searchData () {
       Object.assign(this.submitInfo, this.formInfo);
-      if (!this.submitInfo.type) {
+      if (this.submitInfo.type !== 0 && !this.submitInfo.type) {
         this.submitInfo.type = -1;
       } 
       if (!this.submitInfo.role) {
         this.submitInfo.role = -1;
       }
+      this.submitInfo.pageNum = 1;
       this.changeTableData();
     },
-    addVolunteer() {
-      // add
+    // 获取导入模板
+    downloadFile() {
+      window.open('http://139.199.88.87:9001/api/universal/file/template');
+    },
+    addVolunteer(response, file, fileList) {
+      console.log(response);
+      this.changeTableData();
     },
     deleteVolunteer() {
       this.$confirm('确认删除所有志愿者？').then(() => {
         clearVolunteer().then(res => {
           this.$message('删除志愿者成功');
+          this.submitInfo.pageNum = 1;
+          this.changeTableData();
         }).catch(res => {
           console.log(res);
         })
       }).catch(() => {});
       // 重新刷新table
-      this.changeTableData();
     }
   }
 }
@@ -279,6 +298,9 @@ export default {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
+  }
+  .upload-demo {
+    margin: 0 15px;
   }
   .pagination {
     margin: 20px;

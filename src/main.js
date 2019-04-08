@@ -4,8 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import HsMenu from 'hs-menu'
+import store from './store';
 import { Button, Badge, Input, Select, Option, Form, FormItem, Table, TableColumn, Dialog,
-  MessageBox, Message, Pagination, Row, Col, Alert} from 'element-ui'
+  MessageBox, Message, Pagination, Row, Col, Alert, DatePicker, Upload} from 'element-ui'
 
 
 Vue.config.productionTip = false
@@ -26,6 +27,8 @@ Vue.use(Pagination)
 Vue.use(Row)
 Vue.use(Col)
 Vue.use(Alert)
+Vue.use(DatePicker)
+Vue.use(Upload)
 
 Vue.prototype.$alert = Message.alert;
 Vue.prototype.$msgbox = MessageBox;
@@ -37,6 +40,7 @@ Vue.prototype.$message = Message;
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

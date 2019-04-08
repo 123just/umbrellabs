@@ -4,7 +4,7 @@
       <div class="login-main">
         <div class="login-title">登 录</div>
         <div class="login-form">
-          <el-form :model="formInfo">
+          <el-form :model="formInfo" @submit.prevent="onSubmit">
             <el-form-item label="账号：" label-width="60px">
               <el-input placeholder="手机号" v-model="formInfo.phone"></el-input>
             </el-form-item>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import {login} from '../api/apis'
 export default {
   data () {
     return {
@@ -33,7 +34,18 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log('onSubmit');
+      login(this.formInfo).then(res => {
+        if (res.data.code !== 200) {
+          this.$message.error(''+res.data.msg);
+        } else {
+          this.$message({
+            message: '登录成功',
+            type: 'success'
+          });
+          this.$store.commit('setToken', res.data.data.token);
+          this.$router.push({ path: '/app-center' });
+        }
+      })
     }
   }
 }

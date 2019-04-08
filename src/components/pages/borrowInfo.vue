@@ -24,7 +24,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="经手志愿者：">
-            <el-input class="borrow-items-input" v-model="formInfo.code" placeholder="请输入"></el-input>
+            <el-input class="borrow-items-input" v-model="formInfo.volunteerCode" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button class="reset-btn" @click="reset">复 原</el-button>
@@ -39,7 +39,7 @@
         border>
         <el-table-column
         prop="umbrellaCode"
-        label="伞编号">
+        label="伞编号" width="65">
         </el-table-column>
         <el-table-column
         prop="userName"
@@ -52,7 +52,8 @@
         </el-table-column>
         <el-table-column
           prop="borrowTime"
-          label="借伞时间">
+          label="借伞时间"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="borrowVolunteerName"
@@ -60,18 +61,20 @@
         </el-table-column>
         <el-table-column
           prop="send"
-          label="是否还伞">
+          label="是否还伞" width="80">
           <template slot-scope="scope">
             <span>{{ scope.row.send ? '是' : '否' }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          prop="dealLine"
-          label="应还伞时间">
+          prop="deadLine"
+          label="应还伞日期"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
-          prop="sendVolunteerName"
-          label="还伞时间">
+          prop="sendTime"
+          label="还伞时间"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="sendVolunteerName"
@@ -84,10 +87,11 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-          :current-page.sync="currentPage"
+          :current-page.sync="submitInfo.pageNum"
           :page-size="7"
           layout="total, prev, pager, next"
-          :total="tableData.length">
+          :total="totalData"
+          @current-change="changeTableData">
         </el-pagination>
       </div>
     </div>
@@ -95,6 +99,8 @@
 </template>
 
 <script>
+import {getBorrowList} from '../../api/apis'
+
 export default {
   data () {
     return {
@@ -113,24 +119,57 @@ export default {
         position: '',
         umbrellaCode: '',
         userName: '',
+        volunteerCode: '',
+        pageNum: 1,
+        pageSize: 7
+      },
+      submitInfo: {
         pageNum: 1,
         pageSize: 7
       },
       // tableData
       tableData: [],
-      currentPage: 1 // pagination的当前页
+      totalData: 0 // pagination的总条数
     }
   },
+  created() {
+    this.changeTableData();
+  },
   methods: {
+    // 计算deadLine
+    deadLine(borrowTime) {
+      let date = new Date(borrowTime.replace(/-/g, "/"));
+      date = new Date((date/1000+(86400*7))*1000); // 日期+7
+      return date.getFullYear() + '-' + (date.getMonth()+1) + '-' +(date.getDate());
+    },
+    // 更新表格数据
+    changeTableData() {
+      getBorrowList(this.submitInfo).then(res => {
+        if (res.data.code !== 200) {
+          console.log(res);
+        } else {
+          this.tableData = res.data.data.list;
+          this.totalData = res.data.data.total;
+          this.tableData.forEach(e => {
+            e.deadLine =  this.deadLine(e.borrowTime);
+          })
+        }
+      })
+    },
     // 重置按钮
     reset() {
       this.formInfo.position = '';
       this.formInfo.umbrellaCode = '';
       this.formInfo.userName = '';
-      this.formInfo.pageNum = 1;
+      this.formInfo.volunteerCode = '';
+      Object.assign(this.submitInfo, this.formInfo);
+      this.submitInfo.pageNum = 1;
+      this.changeTableData();
     },
     searchItems() {
-      // 搜索信息
+      Object.assign(this.submitInfo, this.formInfo);
+      this.submitInfo.pageNum = 1;
+      this.changeTableData();
     }
   }
 }

@@ -225,6 +225,7 @@ export default {
               this.$message('成功添加'+ this.addInfo.code +'伞');
               this.addVisible = false;
               // 更新table数据
+              this.submitInfo.pageNum = 1;
               this.changeTableData();
             }
           }).catch(res => {
@@ -251,6 +252,7 @@ export default {
               this.$message('成功修改'+ this.editInfo.umbrellaId +'伞');
               this.editVisible = false;
               // 更新table数据
+              this.submitInfo.pageNum = 1;
               this.changeTableData();
             }
           }).catch(res => {
@@ -265,12 +267,13 @@ export default {
       this.formInfo.position = '';
       this.formInfo.status = -1;
       this.formInfo.code = '';
-      this.formInfo.pageNum = 1;
       Object.assign(this.submitInfo, this.formInfo);
+      this.submitInfo.pageNum = 1;
       this.changeTableData();
     },
     searchItems() {
       Object.assign(this.submitInfo, this.formInfo);
+      this.submitInfo.pageNum = 1;
       this.changeTableData();
     }
   }

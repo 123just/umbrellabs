@@ -11,13 +11,13 @@
       <div class="base-form">
         <el-form :inline="true" :model="formInfo" class="form-inline">
           <el-form-item label="使用金额： ￥" style="margin-right: 40px">
-            <el-input v-model="formInfo.sum" placeholder="请输入金额"></el-input>
+            <el-input v-model="formInfo.sum" type="number" placeholder="请输入金额"></el-input>
           </el-form-item>
           <el-form-item label="使用原因：" style="margin-right: 40px">
             <el-input v-model="formInfo.reason" placeholder="请输入原因" style="width:400px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="searchItems">确 认</el-button>
+            <el-button type="primary" @click="addRecords">确 认</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import {findUseRecords, addFundRecord, getfundAmount} from '../../api/apis'
+
 export default {
   data () {
     return {
@@ -64,47 +66,54 @@ export default {
         sum: 0,
         reason: '',
       },
-      tableData: [{
-      "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      },{
-        "creatorName": '123',
-      "reason": "伞坏了",
-      "sum": 30,
-      "useTime": "201511212-22:22"
-      }]
+      tableData: []
+    }
+  },
+  created() {
+    this.changeTableData();
+    this.changeFundAmount();
+  },
+  methods: {
+    changeFundAmount () {
+      getfundAmount().then(res => {
+        if (res.data.code !== 200) {
+          console.log(res);
+        } else {
+          console.log(res);
+          this.fundAmount = res.data.data;
+        }
+      })
+    },
+    changeTableData() {
+      findUseRecords().then(res => {
+        if (res.data.code !== 200) {
+          console.log(res);
+        } else {
+          this.tableData = res.data.data;
+        }
+      })
+    },
+    addRecords() {
+      if (!this.formInfo.sum){
+        this.$message.error('使用资金不能为0');
+      } else {
+        this.$confirm('确认提交申请？').then(res => {
+          addFundRecord(this.formInfo).then(res => {
+            if (res.data.code !== 200) {
+              console.log(res);
+            } else {
+              this.$message({
+                message: '',
+                type: 'success'
+              });
+              this.changeTableData();
+              this.changeFundAmount();
+              this.formInfo.sum = 0;
+              this.formInfo.reason = '';
+            }
+          })
+        })
+      }
     }
   }
 }

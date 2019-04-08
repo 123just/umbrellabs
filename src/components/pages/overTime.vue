@@ -44,10 +44,11 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-          :current-page.sync="currentPage"
+          :current-page.sync="submitInfo.pageNum"
           :page-size="7"
           layout="total, prev, pager, next"
-          :total="tableData.length">
+          :total="totalAmount"
+          @current-change="changeTableData">
         </el-pagination>
       </div>
     </div>
@@ -55,20 +56,28 @@
 </template>
 
 <script>
+import {unsendCount, overdueList} from '../../api/apis'
 export default {
   data () {
     return {
-      // tableData
+      submitInfo: {
+        pageNum: 1,
+        pageSize: 7
+      },
       tableData: [],
-      currentPage: 1, // pagination的当前页
-      alertTitle: ''
+      alertTitle: '',
+      totalAmount: 0
     }
   },
   created() {
-    let totalAmount = 0; // 接口获取
-    this.alertTitle = "共有" + totalAmount + "把伞未及时归还，请提醒相应志愿者及时催伞！"
+    overdueList(this.submitInfo).then(res => {
+      this.tableData = res.data.data.list;
+      this.totalAmount = res.data.data.total;
+      this.alertTitle = "共有" + this.totalAmount + "把伞未及时归还，请提醒相应志愿者及时催伞！"
+    })
   },
   methods: {
+
   }
 }
 </script>

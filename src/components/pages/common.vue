@@ -11,7 +11,7 @@
     <div class = "right-content">
       <div class = "right-top">
         <div class = "top-title">{{ title }}</div>
-        <div class = "top-user">
+        <div class = "top-user" @click="dialogVisible = true">
           <div class="user-motto"></div>
           <div class="user-name">{{ userName }}</div>
         </div>
@@ -25,12 +25,52 @@
         <router-view/>
       </div>
     </div>
+    <el-dialog title="修改密码" :visible.sync="dialogVisible" width="350px" :close-on-click-modal=false>
+      <el-form :model="pwdSubmit" status-icon :rules="pwdRule" ref="pwdSubmit">
+          <el-form-item label="原密码" label-width="70px" prop="oldPwd">
+            <el-input type="password" v-model="pwdSubmit.oldPwd" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码" label-width="70px" prop="newPwd">
+            <el-input type="password" v-model="pwdSubmit.newPwd" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" label-width="70px" prop="checkPwd">
+            <el-input type="password" v-model="pwdSubmit.checkPwd" autocomplete="off"></el-input>
+          </el-form-item>
+      </el-form>
+      <div class="dialog-txt">{{ dialogText }}</div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changePWD('pwdSubmit')">修 改</el-button>
+      </div>
+  </el-dialog>
   </div>
 </template> 
 
 <script>
+import {unsendCount, changePassword} from '../../api/apis'
 export default {
   data () {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else if (!new RegExp('^(?![0-9]+$)(?![a-zA-Z]+$)(?![^0-9a-zA-Z]+$).{6,20}$').test(value)){
+        callback(new Error('密码为6-20位数字与字母的组合'));
+      } else {
+        if (this.pwdSubmit.checkPwd !== '') {
+          this.$refs.pwdSubmit.validateField('checkPwd');
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.pwdSubmit.newPwd) {
+        callback(new Error('两次输入密码不一致！'));
+      } else {
+        callback();
+      }
+    };
     return {
       menuSource: [{
         "activeIcon": "http://wcdn.servyou.com.cn/update2/zxm/appCenter/img/fcbf529f9d15401b93bc24318aadec12.png",
@@ -77,7 +117,22 @@ export default {
       isActiveParentMenu: false,
       title: '志愿伞管理', // top-title上的标题
       userName: 'Admin',
-      infosValue: 0
+      infosValue: 0,
+      dialogVisible: false,
+      dialogText: '',
+      pwdSubmit: {
+        oldPwd: '',
+        newPwd: '',
+        checkPwd: ''
+      },
+      pwdRule: {
+        newPwd: [
+          { validator: validatePass, trigger: 'blur'}
+        ],
+        checkPwd: [
+          { validator: validatePass2, trigger: 'blur'}
+        ]
+      }
     }
   },
   created() {
@@ -86,6 +141,9 @@ export default {
     let str  = this.$route.path.substring(index + 1, this.$route.path.length);
     this.activeMenu = str;
     this.title = this.$route.meta.name;
+    unsendCount().then(res => {
+      this.infosValue = res.data.data;
+    })
   },
   methods: {
     select (data) {
@@ -103,6 +161,29 @@ export default {
     },
     changePage () {
       this.title = this.$route.meta.name;
+    },
+    changePWD(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let password = {
+            newPassword: this.pwdSubmit.newPwd,
+            oldPassword: this.pwdSubmit.oldPwd
+          }
+          changePassword(password).then(res => {
+            if (res.data.code !== 200) {
+              this.$message.error(''+res.data.msg);
+            } else {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              });
+              this.dialogVisible = false;
+            }
+          })
+        } else {
+          return false;
+        }
+      })
     }
   }
 }
@@ -147,6 +228,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     min-width: 100px;
+    cursor: pointer;
     margin: 0 4px;
     padding: 20px;
     background: #ffffff;
