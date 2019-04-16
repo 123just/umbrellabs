@@ -98,6 +98,7 @@
 
 <script>
 import {getSignList, exportTimeTable, editSignInfo} from '../../api/apis'
+import {formatTime} from '../../utils/index'
 
 export default {
   data () {
@@ -117,7 +118,6 @@ export default {
       dialogData: {
         signBackTime: '',
         signInTime: '',
-        userId: 0,
         id: 0
       },
       dataAddress: '',
@@ -168,19 +168,28 @@ export default {
       return timeString;
     },
     handleEditStatus(row) {
-      console.log(row);
       this.dialogFormVisible = true;
       this.dialogData.signBackTime = row.signBackTime;
       this.dialogData.signInTime = row.signInTime;
       this.dialogData.id = row.id;
-      this.dialogData.userId = row.userId;
     },
     editData() {
+      if (this.dialogData.signBackTime instanceof Date) {
+        this.dialogData.signBackTime = formatTime(this.dialogData.signBackTime); 
+      }
+      if (this.dialogData.signInTime instanceof Date) {
+        this.dialogData.signInTime = formatTime(this.dialogData.signInTime); 
+      }
       this.$confirm('确认修改本条数据？').then(() => {
         this.dialogFormVisible = false;
         // 修改数据
         editSignInfo(this.dialogData).then(res => {
-          
+          console.log(res);
+          this.searchItems();
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
         })
       }).catch(() => {});
     },

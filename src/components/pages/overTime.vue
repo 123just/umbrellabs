@@ -30,15 +30,15 @@
           label="借伞时间">
         </el-table-column>
         <el-table-column
-          prop="borrowVolunteerName"
+          prop="volunteerCode"
           label="志愿者编号">
         </el-table-column>
         <el-table-column
-          prop="send"
+          prop="borrowVolunteerName"
           label="志愿者姓名">
         </el-table-column>
         <el-table-column
-          prop="dealLine"
+          prop="remark"
           label="备注">
         </el-table-column>
       </el-table>
@@ -70,14 +70,16 @@ export default {
     }
   },
   created() {
-    overdueList(this.submitInfo).then(res => {
-      this.tableData = res.data.data.list;
-      this.totalAmount = res.data.data.total;
-      this.alertTitle = "共有" + this.totalAmount + "把伞未及时归还，请提醒相应志愿者及时催伞！"
-    })
+    this.changeTableData();
   },
   methods: {
-
+    changeTableData() {
+      overdueList(this.submitInfo).then(res => {
+        this.tableData = res.data.data.list;
+        this.totalAmount = res.data.data.total;
+        this.alertTitle = "共有" + this.totalAmount + "把伞未及时归还，请提醒相应志愿者及时催伞！"
+      })
+    }
   }
 }
 </script>

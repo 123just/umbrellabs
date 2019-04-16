@@ -99,7 +99,7 @@
       </div>
   </el-dialog>
   <el-dialog title="新增伞" :visible.sync="addVisible" width="350px">
-      <el-form>
+      <el-form @submit.prevent="addUmbrellas">
           <el-form-item label="伞编号：" label-width="80px" style="margin-bottom: 5px">
             <el-input v-model="addInfo.code" placeholder="请输入伞编号"></el-input>
           </el-form-item>
@@ -107,7 +107,7 @@
       <div class="dialog-txt">* {{ addDialogText }}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUmbrellas" :disabled="!addInfo.code">新 增</el-button>
+        <el-button type="primary" native-type="submit" @click="addUmbrellas" :disabled="!addInfo.code">新 增</el-button>
       </div>
   </el-dialog>
   </div>
@@ -222,7 +222,10 @@ export default {
             if (res.data.code !== 200) {
               this.addDialogText = res.data.msg;
             } else {
-              this.$message('成功添加'+ this.addInfo.code +'伞');
+              this.$message({
+                message: '成功添加'+ this.addInfo.code +'伞',
+                type: 'success'
+              });
               this.addVisible = false;
               // 更新table数据
               this.submitInfo.pageNum = 1;
@@ -249,7 +252,10 @@ export default {
             if (res.data.code !== 200) {
               this.editDialogText = '* ' + res.data.msg;
             } else {
-              this.$message('成功修改'+ this.editInfo.umbrellaId +'伞');
+              this.$message({
+                message: '成功修改'+ this.editInfo.umbrellaId +'伞',
+                type: 'success'
+              });
               this.editVisible = false;
               // 更新table数据
               this.submitInfo.pageNum = 1;

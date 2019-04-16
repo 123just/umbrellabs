@@ -281,6 +281,18 @@ export default {
     background-color: #FF8040;
     border-color: #FF8040;
   }
+  .el-button--primary:disabled{
+    color: #fff;
+    background-color: #F6A67F;
+    border-color: #F6A67F;
+    min-width: 85px;
+  }
+  .el-button--primary:disabled:hover{
+    color: #fff;
+    background-color: #F6A67F;
+    border-color: #F6A67F;
+    min-width: 85px;
+  }
   .reset-btn {
     background-color: #ffffff;
     border-color: #FF8040;

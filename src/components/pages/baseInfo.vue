@@ -9,7 +9,7 @@
         <div class="top-amount">项目总金额：￥{{ fundAmount }}</div>
       </div>
       <div class="base-form">
-        <el-form :inline="true" :model="formInfo" class="form-inline">
+        <el-form :inline="true" :model="formInfo" class="form-inline" @submit.prevent="addRecords">
           <el-form-item label="使用金额： ￥" style="margin-right: 40px">
             <el-input v-model="formInfo.sum" type="number" placeholder="请输入金额"></el-input>
           </el-form-item>
@@ -17,7 +17,7 @@
             <el-input v-model="formInfo.reason" placeholder="请输入原因" style="width:400px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="addRecords">确 认</el-button>
+            <el-button type="primary" native-type="submit" @click="addRecords">确 认</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -103,7 +103,7 @@ export default {
               console.log(res);
             } else {
               this.$message({
-                message: '',
+                message: '申请提交成功',
                 type: 'success'
               });
               this.changeTableData();

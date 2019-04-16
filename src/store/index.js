@@ -8,6 +8,7 @@ const state = {
 const mutations = {
   setToken(state, n) {
     state.token = n
+    localStorage.token = n
   }
 }
 export default new Vuex.Store({

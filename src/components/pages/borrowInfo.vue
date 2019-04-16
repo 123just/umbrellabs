@@ -6,7 +6,7 @@
         <div class="title-name">检索</div>
       </div>
       <div class="search-submain">
-        <el-form :inline="true" :model="formInfo" class="form-inline">
+        <el-form :inline="true" :model="formInfo" class="form-inline" @submit.prevent="searchItems">
           <el-form-item label="伞编号：">
             <el-input class="borrow-items-input" v-model="formInfo.umbrellaCode" placeholder="请输入伞编号"/>
           </el-form-item>
@@ -23,12 +23,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="经手志愿者：">
+          <el-form-item label="志愿者编号：">
             <el-input class="borrow-items-input" v-model="formInfo.volunteerCode" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button class="reset-btn" @click="reset">复 原</el-button>
-            <el-button type="primary" class="search-btn" @click="searchItems">搜 索</el-button>
+            <el-button type="primary" native-type="submit" class="search-btn" @click="searchItems">搜 索</el-button>
           </el-form-item>
         </el-form>
       </div>

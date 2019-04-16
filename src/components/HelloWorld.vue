@@ -1,6 +1,10 @@
 <template>
   <div class="main">
     <div class="login-bg">
+      <div class="login-project-name">
+        <div class="project-logo"></div>
+        <div class="project-name">校园爱心伞管理系统</div>
+      </div>
       <div class="login-main">
         <div class="login-title">登 录</div>
         <div class="login-form">
@@ -17,6 +21,7 @@
           </el-form>
         </div>
       </div>
+      <div class="copyright">Copyright © 2018-2019 杭州师范大学校园爱心伞管理系统</div>
     </div>
   </div>
 </template>
@@ -54,17 +59,33 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .main {
-  background-color: #333;
+  background:url('../assets/loginBg.png');
+  background-size: 100% 100%;
   width: 100%;
   height: 100%;
 }
 .login-bg {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.5)
+  background-color: rgba(0, 0, 0, 0.4)
+}
+.login-project-name {
+  display: flex;
+  margin: 10px 0 0 20px;
+  text-align: start;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+.project-logo {
+  width: 34px;
+  height: 34px;
+  margin-right: 5px;
+  transform:rotate(17deg);
+  background: url('https://justdj-umbrella.oss-cn-hangzhou.aliyuncs.com/umbrella_active.png');
+  background-size: 34px 34px;
 }
 .login-main {
   display: flex;
@@ -73,6 +94,7 @@ export default {
   align-items: center;
   width: 400px;
   height: 300px;
+  margin: auto;
   background-color: #fff;
 }
 .login-title {
@@ -88,6 +110,11 @@ export default {
   width: 100%;
 }
 .el-button {
-  width: 80%;
+  width: 100%;
+}
+.copyright {
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: #eeeeee;
 }
 </style>

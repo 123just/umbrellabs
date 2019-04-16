@@ -244,7 +244,7 @@ export default {
     },
     // 获取导入模板
     downloadFile() {
-      window.open('http://139.199.88.87:9001/api/universal/file/template');
+      window.open('https://justdj-umbrella.oss-cn-hangzhou.aliyuncs.com/%E5%BF%97%E6%84%BF%E8%80%85%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx');
     },
     addVolunteer(response, file, fileList) {
       console.log(response);
