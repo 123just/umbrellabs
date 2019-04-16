@@ -72,7 +72,7 @@ export default {
       }],
       // 搜索form
       formInfo: {
-        classId: '',
+        classId: 1,
         code: '',
         id: '',
         name: '',
@@ -81,7 +81,7 @@ export default {
       },
       academyList: [],
       classList: [],
-      academyInfo: '',
+      academyInfo: 1,
       userInfo: this.$route.query.userInfo,
       isShowPWD: false // 是否为管理员或负责人
     }
@@ -99,6 +99,7 @@ export default {
     getAcademyList().then(res => {
       this.academyList = res.data.data;
     })
+    this.changeClassList()
   },
   methods: {
     // 根据academyId选择classList
