@@ -24,7 +24,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="志愿者编号：">
-            <el-input class="borrow-items-input" v-model="formInfo.volunteerCode" placeholder="请输入"></el-input>
+            <el-input class="borrow-items-input" v-model="formInfo.volunteerCode" placeholder="请输入志愿者编号"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button class="reset-btn" @click="reset">复 原</el-button>

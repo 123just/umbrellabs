@@ -253,7 +253,7 @@ export default {
               this.editDialogText = '* ' + res.data.msg;
             } else {
               this.$message({
-                message: '成功修改'+ this.editInfo.umbrellaId +'伞',
+                message: '成功修改',
                 type: 'success'
               });
               this.editVisible = false;

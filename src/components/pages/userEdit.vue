@@ -124,7 +124,10 @@ export default {
             if (res.data.code !== 200) {
               this.$message.error(res.data.msg);
             } else {
-              this.$message('修改成功');
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              });
               this.$router.push({ path: '/app-center/user' });
             }
           })
@@ -137,7 +140,10 @@ export default {
           if (res.data.code !== 200) {
             this.$message.error(res.data.msg);
           } else {
-            this.$message('重置密码成功');
+            this.$message({
+              message: '重置密码成功',
+              type: 'success'
+            });
             this.$router.push({ path: '/app-center/user' });
           }
         })

@@ -247,13 +247,19 @@ export default {
       window.open('https://justdj-umbrella.oss-cn-hangzhou.aliyuncs.com/%E5%BF%97%E6%84%BF%E8%80%85%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx');
     },
     addVolunteer(response, file, fileList) {
-      console.log(response);
       this.changeTableData();
+      this.$message({
+        message: '删除用户成功',
+        type: 'success'
+      });
     },
     deleteVolunteer() {
       this.$confirm('确认删除所有志愿者？').then(() => {
         clearVolunteer().then(res => {
-          this.$message('删除志愿者成功');
+          this.$message({
+            message: '新增志愿者成功',
+            type: 'success'
+          });
           this.submitInfo.pageNum = 1;
           this.changeTableData();
         }).catch(res => {
